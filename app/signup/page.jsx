@@ -3,6 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/app/utils/supabaseClient";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import Link from "next/link";
 // import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
@@ -66,7 +67,7 @@ const SignUp = () => {
         </div>
       </div>
       <div className="flex items-center justify-center p-8">
-        <form className="space-y-4 w-[350px] mx-auto ">
+        <form className="space-y-4 w-[350px] mx-auto " onSubmit={handleSubmit}>
           <div className=" flex flex-col gap-2">
             <h1 className="text-2xl font-bold"> Sgin up </h1>
             <p className="">Enter your information to Sign up!</p>
@@ -135,15 +136,15 @@ const SignUp = () => {
             />
           </label>
 
-          <button className="w-full btn border-gray-400">
+          <button type="submit" className="w-full btn border-gray-400">
             <span>Sign up</span>
           </button>
 
           <div className="mt-6 text-center text-sm">
             You already a customer?
-            <a href="#" className="text-accent  font-medium">
+            <Link href="/login" className="text-accent  font-medium">
               {" Sign in"}
-            </a>
+            </Link>
           </div>
         </form>
       </div>

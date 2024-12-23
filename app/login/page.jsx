@@ -35,7 +35,7 @@ const login = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 justify-center items-center h-screen">
+    <div className=" grid grid-cols-1 h-screen md:grid-cols-2 justify-center items-center ">
       {/* /* <!-- Image Column --> */}
       <div className="hidden bg-accent md:block md:w-full md:h-full md:my-8 xl:my-12">
         <div className="flex flex-col items-center justify-center xl:min-w-full md:min-w-full min-h-full gap-8 md:w-[600px] xl:w-[600px]  mx-auto">
@@ -48,7 +48,7 @@ const login = () => {
         </div>
       </div>
       <div className="flex items-center justify-center p-8">
-        <form className="space-y-4 w-[350px] mx-auto ">
+        <form className="space-y-4 w-[350px] mx-auto " onSubmit={handleLogin}>
           <div className=" flex flex-col gap-2">
             <h1 className="text-2xl font-bold"> Sgin in </h1>
             <p className="">Enter your email and password to sign in!</p>
@@ -60,24 +60,42 @@ const login = () => {
           </button>
           <hr className="text-red-900" />
 
-          <label className="input input-bordered flex items-center gap-2 border-gray-400">
-            Name
-            <input type="text" className="grow " placeholder="Daisy" />
-          </label>
-          <label className="input input-bordered flex items-center gap-2 border-gray-400">
+          <label
+            htmlFor="email"
+            className="input input-bordered flex items-center gap-2 border-gray-400"
+          >
             Email
-            <input type="text" className="grow" placeholder="daisy@site.com" />
+            <input
+              type="text"
+              name="email"
+              className="grow "
+              placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          <label
+            htmlFor="password"
+            className="input input-bordered flex items-center gap-2 border-gray-400"
+          >
+            Password
+            <input
+              type="password"
+              name="password"
+              className="grow"
+              placeholder="Enter your password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </label>
 
-          <button className="w-full btn border-gray-400">
+          <button type="submit" className="w-full btn border-gray-400">
             <span>Sign in</span>
           </button>
 
           <div className="mt-6 text-center text-sm">
             Don't have an account?
-            <a href="#" className="text-accent  font-medium">
-              {" Sign in"}
-            </a>
+            <Link href="/signup" className="text-accent  font-medium">
+              {" Sign up"}
+            </Link>
           </div>
         </form>
       </div>
