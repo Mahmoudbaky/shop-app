@@ -10,7 +10,7 @@ const login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [err, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
@@ -23,12 +23,12 @@ const login = () => {
         email,
         password,
       });
-      console.log(data);
+      console.log(error);
       if (error) throw error;
-
-      // router.push("/dashboard"); // Redirect to dashboard after successful login
+      router.push("/"); // Redirect to dashboard after successful login
     } catch (error) {
       setError(error.message);
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const login = () => {
             <input
               type="text"
               name="email"
-              className="grow "
+              className="grow"
               placeholder="Enter your email"
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -93,7 +93,7 @@ const login = () => {
 
           <div className="mt-6 text-center text-sm">
             Don't have an account?
-            <Link href="/signup" className="text-accent  font-medium">
+            <Link href="/auth/signup" className="text-accent  font-medium">
               {" Sign up"}
             </Link>
           </div>

@@ -37,7 +37,7 @@ const SignUp = () => {
       }
 
       alert("Sign up successful");
-      router.push("/login");
+      router.push("/auth/login");
 
       // const { err } = await supabase.from("Users").insert([
       //   {
@@ -142,7 +142,7 @@ const SignUp = () => {
 
           <div className="mt-6 text-center text-sm">
             You already a customer?
-            <Link href="/login" className="text-accent  font-medium">
+            <Link href="/auth/login" className="text-accent  font-medium">
               {" Sign in"}
             </Link>
           </div>
