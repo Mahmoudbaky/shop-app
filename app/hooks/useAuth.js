@@ -8,39 +8,60 @@ const useAuth = () => {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null); // Set the user if session exists or null if not
-      if (session?.user) {
-        fetchUserRole(session.user.id);
+    async function getInitialSession() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          const { data } = await supabase
+            .from("users")
+            .select("role")
+            .eq("id", session.user.id)
+            .single();
+          setRole(data?.role);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
       }
-    });
+    }
 
-    // Listen for auth changes
+    getInitialSession();
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        await fetchUserRole(session.user.id);
+        const { data } = await supabase
+          .from("users")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+        setRole(data?.role);
       } else {
         setRole(null);
       }
       setLoading(false);
     });
+
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchUserRole = async (userId) => {
-    const { data, error } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", userId)
-      .single();
+  // const fetchUserRole = async (userId) => {
+  //   const { data, error } = await supabase
+  //     .from("users")
+  //     .select("role")
+  //     .eq("id", userId)
+  //     .single();
 
-    if (!error && data) {
-      setRole(data.role);
-    }
-  };
+  //   if (!error && data) {
+  //     setRole(data.role);
+  //   }
+  // };
 
   return { user, role, loading };
 };

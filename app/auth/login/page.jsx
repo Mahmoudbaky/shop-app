@@ -23,7 +23,7 @@ const login = () => {
         email,
         password,
       });
-      console.log(error);
+      console.log(data);
       if (error) throw error;
       router.push("/"); // Redirect to dashboard after successful login
     } catch (error) {

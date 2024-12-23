@@ -6,6 +6,8 @@ const AddProdBtn = () => {
   const { role } = useAuth();
   const router = useRouter();
 
+  console.log(role);
+
   if (role !== "admin") return null;
 
   return (
