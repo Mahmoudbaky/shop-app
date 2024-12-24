@@ -7,7 +7,7 @@ const page = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  return <div>page</div>;
+  return <div>add products page</div>;
 };
 
 export default page;

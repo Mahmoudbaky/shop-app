@@ -1,18 +1,21 @@
 "use client";
+import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
-import useAuth from "@/app/hooks/useAuth.js";
 
 const AddProdBtn = () => {
-  const { role } = useAuth();
+  const { isAdmin } = useAuth();
   const router = useRouter();
 
-  console.log(role);
+  console.log(isAdmin);
 
-  if (role !== "admin") return null;
+  if (!isAdmin) return null;
 
   return (
-    <button className="btn" onClick={() => router.push("/admin/add-products")}>
-      Button
+    <button
+      onClick={() => router.push("/admin/add-products")}
+      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+    >
+      Add New Product
     </button>
   );
 };
