@@ -1,84 +1,54 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react"; // i need to know more about context api (need some study)
 import { supabase } from "../utils/supabaseClient";
 
-const AuthContext = createContext({});
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [role, setRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    // Check for existing session
-    const checkUser = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (session?.user) {
-          setUser(session.user);
-          // Fetch role from users table
-          const { data: userData } = await supabase
-            .from("users")
-            .select("role")
-            .eq("id", session.user.id)
-            .single();
-
-          setRole(userData?.role);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    // getting user id from the session after loging in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      // i can't understand this syntax {data:{session}}
+      setSession(session);
       if (session?.user) {
-        setUser(session.user);
-        // Fetch role whenever auth state changes
-        const { data: userData } = await supabase
-          .from("users")
-          .select("role")
-          .eq("id", session.user.id)
-          .single();
-
-        setRole(userData?.role);
+        fetchUserRole(session.user.id);
       } else {
-        setUser(null);
-        setRole(null);
+        setUserRole(null);
       }
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    supabase.auth.onAuthStateChange((_event, session) => {
+      // need to know more about this api onAuthStateChange()
+      setSession(session);
+      if (session?.user) {
+        fetchUserRole(session.user.id);
+      } else {
+        setUserRole(null);
+      }
+    });
   }, []);
 
-  const value = {
-    user,
-    role,
-    loading,
-    isAdmin: role === "admin",
+  const fetchUserRole = async (userId) => {
+    const { data, error } = await supabase
+      .from("auth.users")
+      .select("role")
+      .eq("id", userId)
+      .single();
+
+    if (data) {
+      setUserRole(data.role);
+    } else if (error) {
+      console.error("Error fetching user role:", error);
+    }
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  const value = { session, userRole };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  return useContext(AuthContext);
 };

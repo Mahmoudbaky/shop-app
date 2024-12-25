@@ -3,12 +3,12 @@ import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 const AddProdBtn = () => {
-  const { isAdmin } = useAuth();
+  // const { isAdmin } = useAuth();
   const router = useRouter();
 
-  console.log(isAdmin);
+  // console.log(isAdmin);
 
-  if (!isAdmin) return null;
+  // if (!isAdmin) return null;
 
   return (
     <button
