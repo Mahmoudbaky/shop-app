@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
       // need to know more about this api onAuthStateChange()
       setSession(session);
       if (session?.user) {
-        fetchUserRole(session.user.id);
+        fetchUserRole(session.user.id); /// error here
       } else {
         setUserRole(null);
       }
@@ -33,15 +33,16 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserRole = async (userId) => {
     const { data, error } = await supabase
-      .from("auth.users")
+      .from("public.users")
       .select("role")
       .eq("id", userId)
-      .single();
+      .single()
+      .limit(1);
 
     if (data) {
       setUserRole(data.role);
     } else if (error) {
-      console.error("Error fetching user role:", error);
+      console.error("Error fetching user role:", error); /// error here
     }
   };
 
