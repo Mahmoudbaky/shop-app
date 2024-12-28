@@ -1,13 +1,15 @@
 import React from "react";
+import AddProdBtn from "./AddProdBtn";
 
 const NavBar = () => {
   return (
     <div>
       <nav>
-        <ul className="">
-          <li>Home</li>
-          <li>Products</li>
-          <li>Contact</li>
+        <ul className="flex justify-center gap-8">
+          <li>Log out</li>
+          <li>
+            <AddProdBtn />
+          </li>
         </ul>
       </nav>
     </div>
