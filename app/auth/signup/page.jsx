@@ -4,7 +4,6 @@ import { supabase } from "@/app/utils/supabaseClient";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
-// import useAuth from "../hooks/useAuth";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -13,7 +12,6 @@ const SignUp = () => {
   const [rePassword, setRePassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  // const { signUp } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,16 +36,6 @@ const SignUp = () => {
 
       alert("Sign up successful");
       router.push("/auth/login");
-
-      // const { err } = await supabase.from("Users").insert([
-      //   {
-      //     id: data.user.id, // Use the auth user id as the users table id
-      //     username: username,
-      //     email: email,
-      //     role: "user",
-      //     created_at: new Date().toISOString(),
-      //   },
-      // ]);
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +46,6 @@ const SignUp = () => {
       {/* /* <!-- Image Column --> */}
       <div className="hidden bg-accent md:block md:w-full md:h-full md:my-8 xl:my-12">
         <div className="flex flex-col items-center justify-center xl:min-w-full md:min-w-full min-h-full gap-8 md:w-[600px] xl:w-[600px]  mx-auto">
-          {/* <p className="text-2xl text-white self-start">Welcome to our shop</p> */}
           <img
             src="/images/rb_9090.png"
             alt="image"
@@ -153,5 +140,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-// supabase.auth.signInWithPassword()

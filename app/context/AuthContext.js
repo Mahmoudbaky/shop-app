@@ -7,52 +7,94 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const fetchUserRole = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user role:", error);
+        return null;
+      }
+
+      return data?.role;
+    } catch (error) {
+      console.error("Error in fetchUserRole:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     // getting user id from the session after loging in
 
     // Fetch the session on initial load
     const initializeUser = async () => {
-      const { data, error } = supabase.auth.getSession();
-      console.log("Data:", data);
-      console.log("Error:", error);
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
-      if (error) {
-        console.error("Error fetching session:", error.message);
+        if (error) {
+          console.error("Error fetching session:", error.message);
+          setLoading(false);
+          return;
+        }
+
+        if (session?.user) {
+          // Use the role directly from the user object
+          setUser(session.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error in initializeUser:", error);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // if (!data || !data.session) {
-      //   console.log("No active session found");
-      //   return router.push("/auth/login"); // Redirect to login or handle accordingly
-      // }
-
-      console.log(data);
-      setUser(data?.session?.user || null);
-      setLoading(false);
     };
-
-    // Listen to auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
 
     initializeUser();
 
-    return subscription.unsubscribe();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setLoading(true);
+
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+
+      setLoading(false);
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
-  const value = { user, loading };
+  const value = {
+    user,
+    loading,
+    isAdmin: user?.role === "admin", // Check the built-in role
+  };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
 
 // const [session, setSession] = useState(null);
