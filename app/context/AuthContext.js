@@ -12,9 +12,11 @@ export const AuthProvider = ({ children }) => {
     // getting user id from the session after loging in
     supabase.auth.getSession().then(({ data: { session } }) => {
       // i can't understand this syntax {data:{session}}
+      console.log(session);
       setSession(session);
       if (session?.user) {
-        fetchUserRole(session.user.id);
+        console.log(session.user.id);
+        fetchUserRole(session);
       } else {
         setUserRole(null);
       }
@@ -24,23 +26,29 @@ export const AuthProvider = ({ children }) => {
       // need to know more about this api onAuthStateChange()
       setSession(session);
       if (session?.user) {
-        fetchUserRole(session.user.id); /// error here
+        fetchUserRole(session); /// error here
       } else {
         setUserRole(null);
       }
     });
   }, []);
 
-  const fetchUserRole = async (userId) => {
-    const { data, error } = await supabase
-      .from("public.users")
-      .select("role")
-      .eq("id", userId)
-      .single()
-      .limit(1);
+  const fetchUserRole = (session) => {
+    // console.log(userId);
 
-    if (data) {
-      setUserRole(data.role);
+    const Role = session.user.role;
+    console.log(Role);
+    // const { data, error } = await supabase
+    //   .from("public.users")
+    //   .select("role")
+    //   .eq("id", userId)
+    //   .single()
+    //   .limit(1);
+
+    // console.log(data);
+    if (Role) {
+      setUserRole(Role);
+      console.log(Role);
     } else if (error) {
       console.error("Error fetching user role:", error); /// error here
     }
