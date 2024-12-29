@@ -5,18 +5,26 @@ import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 const page = () => {
-  const { session, userRole } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!session || userRole !== "admin") {
-      router.push("/auth/login"); // Redirect to login if not admin
-    }
-  }, [session, userRole, router]);
+  console.log(user);
 
-  if (!session || userRole !== "admin") {
-    return <div>Redirecting...</div>; // Or a loading indicator
-  } // this pease of code will prevent add products page to appear for a sec
+  useEffect(() => {
+    if (!loading && (!user || user.role !== "admin")) {
+      router.push("/auth/login");
+    }
+  }, [user, loading, router]);
+
+  // Show loading state while we're checking auth
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Only show the page content if user is admin
+  if (!user || user.role !== "admin") {
+    return null;
+  }
 
   return <div>add products page</div>;
 };
